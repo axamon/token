@@ -9,8 +9,6 @@ import (
 	"fmt"
 	"time"
 
-	"testtoken/token"
-
 	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/net/context"
 )
