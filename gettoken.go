@@ -20,7 +20,7 @@ const checkcredentialsinerror = "function checkCredentials in error: %v"
 
 const credentialsdb = "credentialsdb.json"
 
-// GetToken generate a uuid like token (does not follow standards).
+// GetToken generates a uuid like token (does not follow standards).
 func GetToken(ctx context.Context, c *Credentials) (s string, err error) {
 	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
 	defer cancel()
@@ -112,25 +112,24 @@ func CheckLocalCredentials(ctx context.Context, c *Credentials) (bool, error) {
 	defer cancel()
 	defer runtime.GC()
 
-	select {
-	case <-ctx.Done():
-		return false, fmt.Errorf(checkcredentialsinerror, ctx.Err())
+	body, err := ioutil.ReadFile(credentialsdb)
 
-	default:
-		body, err := ioutil.ReadFile(credentialsdb)
+	var db = new(credentialsDB)
+	err = json.Unmarshal(body, &db)
+	if err != nil {
+		return false, err
+	}
 
-		var db = new(credentialsDB)
-		err = json.Unmarshal(body, &db)
-		if err != nil {
-			return false, err
-		}
-
-		for _, r := range db.UserpassDB {
-			if r.UsernameDB == c.User && r.PasswordDB == c.Hashpass {
-				return true, nil
-			}
+	for _, r := range db.UserpassDB {
+		if r.UsernameDB == c.User && r.PasswordDB == c.Hashpass {
+			return true, nil
 		}
 	}
 
-	return false, nil
+	select {
+	case <-ctx.Done():
+		return false, fmt.Errorf(checkcredentialsinerror, ctx.Err())
+	default:
+		return false, nil
+	}
 }
