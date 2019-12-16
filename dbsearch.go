@@ -5,13 +5,14 @@
 package token
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
 	"time"
 
+	// mysql import.
 	_ "github.com/go-sql-driver/mysql"
-	"golang.org/x/net/context"
 )
 
 var userdb, passdb, addr, d string
