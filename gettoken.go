@@ -51,6 +51,8 @@ func GetToken(ctx context.Context, c *Credentials) (s string, err error) {
 // checkCredentials verifies username and passwords.
 func checkCredentials(ctx context.Context, c *Credentials) error {
 
+	credentialsdb := "credentialsdb.json"
+
 	ctx, cancel := context.WithTimeout(ctx, 500*time.Millisecond)
 	defer cancel()
 	defer runtime.GC()
