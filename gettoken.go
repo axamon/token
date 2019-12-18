@@ -2,14 +2,19 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Package token generates pseudo uddi tokens if credentials used
+// match any storage.
 package token
 
 import (
 	"context"
-	"crypto/rand"
+	crand "crypto/rand"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
+	rand "math/rand"
 	"runtime"
 	"time"
 )
@@ -19,6 +24,13 @@ const genertateTokenInError = "function generateToken in error: %v"
 const checkcredentialsinerror = "function checkCredentials in error: %v"
 
 const credentialsdb = "credentialsdb.json"
+
+var src cryptoSource
+
+func init() {
+	rnd := rand.New(src)
+	rnd.Seed(rnd.Int63())
+}
 
 // GetToken generates a uuid like token (does not follow standards).
 // func GetToken(ctx context.Context, c *Credentials) (s string, err error) {
@@ -129,4 +141,18 @@ func CheckLocalCredentials(ctx context.Context, c *Credentials) (bool, error) {
 	default:
 		return false, nil
 	}
+}
+
+func (s cryptoSource) Seed(seed int64) {}
+
+func (s cryptoSource) Int63() int64 {
+	return int64(s.Uint64() & ^uint64(1<<63))
+}
+
+func (s cryptoSource) Uint64() (v uint64) {
+	err := binary.Read(crand.Reader, binary.BigEndian, &v)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return v
 }
