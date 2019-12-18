@@ -18,8 +18,6 @@ const gettokeninerror = "GetToken function in error: %v"
 const genertateTokenInError = "function generateToken in error: %v"
 const checkcredentialsinerror = "function checkCredentials in error: %v"
 
-const credentialsdb = "credentialsdb.json"
-
 // GetToken generates a uuid like token (does not follow standards).
 func GetToken(ctx context.Context, c *Credentials) (s string, err error) {
 	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
@@ -109,6 +107,8 @@ func CheckLocalCredentials(ctx context.Context, c *Credentials) (bool, error) {
 	ctx, cancel := context.WithTimeout(ctx, 500*time.Millisecond)
 	defer cancel()
 	defer runtime.GC()
+
+	credentialsdb := "credentialsdb.json"
 
 	var authenticatedViaJSONFile bool
 
