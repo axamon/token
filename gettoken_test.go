@@ -13,39 +13,6 @@ import (
 	"github.com/axamon/token"
 )
 
-func TestCheckLocalCredentials2(t *testing.T) {
-	token.CredentialsJSONFile = "file.json"
-	type args struct {
-		ctx context.Context
-		c   *token.Credentials
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    bool
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-		{name: "first", args: args{ctx: context.TODO(),
-			c: &token.Credentials{
-				User:     "pippo",
-				Hashpass: hashstring.Md5Sum("pippo")}},
-			want: false, wantErr: true},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := token.CheckLocalCredentials(tt.args.ctx, tt.args.c)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("CheckLocalCredentials() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("CheckLocalCredentials() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestCheckLocalCredentials(t *testing.T) {
 	type args struct {
 		ctx context.Context
@@ -73,6 +40,39 @@ func TestCheckLocalCredentials(t *testing.T) {
 				User:     "pippo",
 				Hashpass: hashstring.Md5Sum("pipp")}},
 			want: false, wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := token.CheckLocalCredentials(tt.args.ctx, tt.args.c)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CheckLocalCredentials() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("CheckLocalCredentials() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCheckLocalCredentials2(t *testing.T) {
+	token.CredentialsJSONFile = "file.json"
+	type args struct {
+		ctx context.Context
+		c   *token.Credentials
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{name: "first", args: args{ctx: context.TODO(),
+			c: &token.Credentials{
+				User:     "pippo",
+				Hashpass: hashstring.Md5Sum("pippo")}},
+			want: false, wantErr: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

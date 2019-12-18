@@ -38,8 +38,8 @@ func init() {
 // and password are found in a record.
 const QueryCredentials = "SELECT IF(COUNT(*),'true','false') FROM app.credentials WHERE username = ? AND password = ?"
 
-// TestSearch looks for credentials in the DB.
-func TestSearch(ctx context.Context, c *Credentials) (bool, error) {
+// CheckCredentialsDBCtx looks for credentials in the DB.
+func CheckCredentialsDBCtx(ctx context.Context, c *Credentials) (bool, error) {
 
 	// Crea il contesto base.
 	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
