@@ -19,7 +19,7 @@ import (
 	"time"
 )
 
-const credentialsdb = "credentialsdb.json"
+var CredentialsJSONFile = "credentialsdb.json"
 
 var src cryptoSource
 
@@ -57,13 +57,13 @@ func CheckLocalCredentials(ctx context.Context, c *Credentials) (bool, error) {
 	ctx, cancel := context.WithTimeout(ctx, 500*time.Microsecond)
 	defer cancel()
 
-	body, err := ioutil.ReadFile(credentialsdb)
+	body, err := ioutil.ReadFile(CredentialsJSONFile)
 
 	var db = new(credentialsDB)
 	err = json.Unmarshal(body, &db)
 	if err != nil {
 		return false, fmt.Errorf(
-			"Error in unmarshalling %s: %v", credentialsdb, err)
+			"Error in unmarshalling %s: %v", CredentialsJSONFile, err)
 	}
 
 	for _, r := range db.UserpassDB {
