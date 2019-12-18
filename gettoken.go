@@ -19,10 +19,6 @@ import (
 	"time"
 )
 
-const gettokeninerror = "GetToken function in error: %v"
-const genertateTokenInError = "function generateToken in error: %v"
-const checkcredentialsinerror = "function checkCredentials in error: %v"
-
 const credentialsdb = "credentialsdb.json"
 
 var src cryptoSource
@@ -32,68 +28,8 @@ func init() {
 	rnd.Seed(rnd.Int63())
 }
 
-// GetToken generates a uuid like token (does not follow standards).
-// func GetToken(ctx context.Context, c *Credentials) (s string, err error) {
-// 	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
-// 	defer cancel()
-// 	defer runtime.GC()
-
-// 	var errors = make(chan error, 1)
-
-// 	select {
-// 	case err = <-errors:
-// 		return "", err
-
-// 	case <-ctx.Done():
-// 		return "", fmt.Errorf("Timeout: %v", ctx.Err())
-
-// 	default:
-
-// 		err = checkCredentials(ctx, c)
-// 		if err != nil {
-// 			return "", err
-// 		}
-
-// 		s, err = GenerateToken(ctx)
-// 		if err != nil {
-// 			return "", err
-// 		}
-// 	}
-// 	return s, err
-// }
-
-// checkCredentials verifies username and passwords.
-func checkCredentials(ctx context.Context, c *Credentials) error {
-
-	ctx, cancel := context.WithTimeout(ctx, 500*time.Millisecond)
-	defer cancel()
-	defer runtime.GC()
-
-	select {
-	case <-ctx.Done():
-		return fmt.Errorf(checkcredentialsinerror, ctx.Err())
-
-	default:
-		body, err := ioutil.ReadFile(credentialsdb)
-
-		var db = new(credentialsDB)
-		err = json.Unmarshal(body, &db)
-		if err != nil {
-			return err
-		}
-
-		for _, r := range db.UserpassDB {
-			if r.UsernameDB == c.User && r.PasswordDB == c.Hashpass {
-				return nil
-			}
-		}
-	}
-
-	return fmt.Errorf("bad credentials")
-}
-
-// GenerateToken generates a token.
-func GenerateToken(ctx context.Context) (string, error) {
+// GenerateCtx generates a token.
+func GenerateCtx(ctx context.Context) (string, error) {
 
 	ctx, cancel := context.WithTimeout(ctx, 2*time.Millisecond)
 	defer cancel()
@@ -101,7 +37,7 @@ func GenerateToken(ctx context.Context) (string, error) {
 
 	select {
 	case <-ctx.Done():
-		return "", fmt.Errorf(genertateTokenInError, ctx.Err())
+		return "", fmt.Errorf("function GenerateCtx in error: %v", ctx.Err())
 
 	default:
 		b := make([]byte, 16)
@@ -126,7 +62,8 @@ func CheckLocalCredentials(ctx context.Context, c *Credentials) (bool, error) {
 	var db = new(credentialsDB)
 	err = json.Unmarshal(body, &db)
 	if err != nil {
-		return false, fmt.Errorf("Error in unmarshalling %s: %v", credentialsdb, err)
+		return false, fmt.Errorf(
+			"Error in unmarshalling %s: %v", credentialsdb, err)
 	}
 
 	for _, r := range db.UserpassDB {
@@ -137,7 +74,8 @@ func CheckLocalCredentials(ctx context.Context, c *Credentials) (bool, error) {
 
 	select {
 	case <-ctx.Done():
-		return false, fmt.Errorf(checkcredentialsinerror, ctx.Err())
+		return false, fmt.Errorf(
+			"function checkCredentials in error: %v", ctx.Err())
 	default:
 		return false, nil
 	}
@@ -152,7 +90,7 @@ func (s cryptoSource) Int63() int64 {
 func (s cryptoSource) Uint64() (v uint64) {
 	err := binary.Read(crand.Reader, binary.BigEndian, &v)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Low entropy, cannot create crypto random number: %v", err)
 	}
 	return v
 }

@@ -71,13 +71,13 @@ func TestGenerateToken(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := token.GenerateToken(tt.args.ctx)
+			got, err := token.GenerateCtx(tt.args.ctx)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("GenerateToken() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("GenerateCtx() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("GenerateToken() = %v, want %v", got, tt.want)
+				t.Errorf("GenerateCtx() = %v, want %v", got, tt.want)
 			}
 		})
 	}
