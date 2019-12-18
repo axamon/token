@@ -21,34 +21,34 @@ const checkcredentialsinerror = "function checkCredentials in error: %v"
 const credentialsdb = "credentialsdb.json"
 
 // GetToken generates a uuid like token (does not follow standards).
-func GetToken(ctx context.Context, c *Credentials) (s string, err error) {
-	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
-	defer cancel()
-	defer runtime.GC()
+// func GetToken(ctx context.Context, c *Credentials) (s string, err error) {
+// 	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
+// 	defer cancel()
+// 	defer runtime.GC()
 
-	var errors = make(chan error, 1)
+// 	var errors = make(chan error, 1)
 
-	select {
-	case err = <-errors:
-		return "", err
+// 	select {
+// 	case err = <-errors:
+// 		return "", err
 
-	case <-ctx.Done():
-		return "", fmt.Errorf("Timeout: %v", ctx.Err())
+// 	case <-ctx.Done():
+// 		return "", fmt.Errorf("Timeout: %v", ctx.Err())
 
-	default:
+// 	default:
 
-		err = checkCredentials(ctx, c)
-		if err != nil {
-			return "", err
-		}
+// 		err = checkCredentials(ctx, c)
+// 		if err != nil {
+// 			return "", err
+// 		}
 
-		s, err = GenerateToken(ctx)
-		if err != nil {
-			return "", err
-		}
-	}
-	return s, err
-}
+// 		s, err = GenerateToken(ctx)
+// 		if err != nil {
+// 			return "", err
+// 		}
+// 	}
+// 	return s, err
+// }
 
 // checkCredentials verifies username and passwords.
 func checkCredentials(ctx context.Context, c *Credentials) error {
