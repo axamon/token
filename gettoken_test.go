@@ -24,11 +24,21 @@ func TestCheckLocalCredentials(t *testing.T) {
 		wantErr bool
 	}{
 		// TODO: Add test cases.
-		{name: "primo", args: args{ctx: context.TODO(),
+		{name: "first", args: args{ctx: context.TODO(),
 			c: &token.Credentials{
 				User:     "pippo",
 				Hashpass: hashstring.Md5Sum("pippo")}},
 			want: true, wantErr: false},
+		{name: "second", args: args{ctx: context.TODO(),
+			c: &token.Credentials{
+				User:     "pluto",
+				Hashpass: hashstring.Md5Sum("pippo")}},
+			want: false, wantErr: false},
+		{name: "third", args: args{ctx: context.TODO(),
+			c: &token.Credentials{
+				User:     "pippo",
+				Hashpass: hashstring.Md5Sum("pipp")}},
+			want: false, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

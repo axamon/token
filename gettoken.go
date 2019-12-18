@@ -18,6 +18,8 @@ const gettokeninerror = "GetToken function in error: %v"
 const genertateTokenInError = "function generateToken in error: %v"
 const checkcredentialsinerror = "function checkCredentials in error: %v"
 
+const credentialsdb = "credentialsdb.json"
+
 // GetToken generates a uuid like token (does not follow standards).
 func GetToken(ctx context.Context, c *Credentials) (s string, err error) {
 	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
@@ -50,8 +52,6 @@ func GetToken(ctx context.Context, c *Credentials) (s string, err error) {
 
 // checkCredentials verifies username and passwords.
 func checkCredentials(ctx context.Context, c *Credentials) error {
-
-	credentialsdb := "credentialsdb.json"
 
 	ctx, cancel := context.WithTimeout(ctx, 500*time.Millisecond)
 	defer cancel()
@@ -106,25 +106,20 @@ func GenerateToken(ctx context.Context) (string, error) {
 // CheckLocalCredentials verifies username and passwords on local json file.
 func CheckLocalCredentials(ctx context.Context, c *Credentials) (bool, error) {
 
-	ctx, cancel := context.WithTimeout(ctx, 500*time.Millisecond)
+	ctx, cancel := context.WithTimeout(ctx, 500*time.Microsecond)
 	defer cancel()
-	defer runtime.GC()
-
-	credentialsdb := "credentialsdb.json"
-
-	var authenticatedViaJSONFile bool
 
 	body, err := ioutil.ReadFile(credentialsdb)
 
 	var db = new(credentialsDB)
 	err = json.Unmarshal(body, &db)
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("Error in unmarshalling %s: %v", credentialsdb, err)
 	}
 
 	for _, r := range db.UserpassDB {
 		if r.UsernameDB == c.User && r.PasswordDB == c.Hashpass {
-			authenticatedViaJSONFile = true
+			return true, nil
 		}
 	}
 
@@ -132,6 +127,6 @@ func CheckLocalCredentials(ctx context.Context, c *Credentials) (bool, error) {
 	case <-ctx.Done():
 		return false, fmt.Errorf(checkcredentialsinerror, ctx.Err())
 	default:
-		return authenticatedViaJSONFile, nil
+		return false, nil
 	}
 }
