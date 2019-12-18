@@ -42,8 +42,6 @@ func GetToken(ctx context.Context, c *Credentials) (s string, err error) {
 			return "", err
 		}
 
-		// time.Sleep(6 * time.Second)
-
 		s, err = GenerateToken(ctx)
 		if err != nil {
 			return "", err
@@ -112,6 +110,8 @@ func CheckLocalCredentials(ctx context.Context, c *Credentials) (bool, error) {
 	defer cancel()
 	defer runtime.GC()
 
+	var authenticatedViaJSONFile bool
+
 	body, err := ioutil.ReadFile(credentialsdb)
 
 	var db = new(credentialsDB)
@@ -122,7 +122,7 @@ func CheckLocalCredentials(ctx context.Context, c *Credentials) (bool, error) {
 
 	for _, r := range db.UserpassDB {
 		if r.UsernameDB == c.User && r.PasswordDB == c.Hashpass {
-			return true, nil
+			authenticatedViaJSONFile = true
 		}
 	}
 
@@ -130,6 +130,6 @@ func CheckLocalCredentials(ctx context.Context, c *Credentials) (bool, error) {
 	case <-ctx.Done():
 		return false, fmt.Errorf(checkcredentialsinerror, ctx.Err())
 	default:
-		return false, nil
+		return authenticatedViaJSONFile, nil
 	}
 }
