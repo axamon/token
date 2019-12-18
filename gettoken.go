@@ -19,6 +19,7 @@ import (
 	"time"
 )
 
+// CredentialsJSONFile is the json file containing credentials.
 var CredentialsJSONFile = "credentialsdb.json"
 
 var src cryptoSource

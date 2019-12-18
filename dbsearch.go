@@ -54,7 +54,8 @@ func CheckCredentialsDBCtx(ctx context.Context, c *Credentials) (bool, error) {
 	}
 
 	var isAuthenticated bool
-	err = db.QueryRowContext(ctx, QueryCredentials, c.User, c.Hashpass).Scan(&isAuthenticated)
+	err = db.QueryRowContext(ctx,
+		QueryCredentials, c.User, c.Hashpass).Scan(&isAuthenticated)
 	if err != nil {
 		return false, fmt.Errorf("db access not possible: %v", err)
 	}
