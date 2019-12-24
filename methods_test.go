@@ -6,6 +6,7 @@ package token_test
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 	"testing"
 	"time"
@@ -66,4 +67,15 @@ func TestCredentials_GetToken(t *testing.T) {
 			}
 		})
 	}
+}
+
+func ExampleCredentials_Autenticato() {
+
+	var c = Credentials{User: "pippo", Hashpass: "f583ca884c1d93458fb61ed137ff44f6"}
+
+	r := c.Autenticato(context.TODO())
+
+	fmt.Println(r)
+	// Output:
+	// true
 }
