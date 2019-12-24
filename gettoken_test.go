@@ -51,6 +51,7 @@ func TestCheckLocalCredentials(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			time.Sleep(time.Millisecond)
 			got, err := token.CheckLocalCredentials(tt.args.ctx, tt.args.c)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CheckLocalCredentials() error = %v, wantErr %v", err, tt.wantErr)
