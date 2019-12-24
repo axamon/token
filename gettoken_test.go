@@ -8,12 +8,15 @@ import (
 	"context"
 	rand "math/rand"
 	"testing"
+	"time"
 
 	"github.com/axamon/hashstring"
 	"github.com/axamon/token"
 )
 
 func TestCheckLocalCredentials(t *testing.T) {
+	ctxshort, cancel := context.WithTimeout(context.Background(), time.Microsecond)
+	defer cancel()
 	type args struct {
 		ctx context.Context
 		c   *token.Credentials
@@ -40,6 +43,11 @@ func TestCheckLocalCredentials(t *testing.T) {
 				User:     "pippo",
 				Hashpass: hashstring.Md5Sum("pipp")}},
 			want: false, wantErr: false},
+		{name: "forth", args: args{ctx: ctxshort,
+			c: &token.Credentials{
+				User:     "pipp",
+				Hashpass: hashstring.Md5Sum("pippo")}},
+			want: false, wantErr: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
