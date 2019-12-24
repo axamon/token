@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/axamon/token"
+
+	// mysql import
 	_ "github.com/go-sql-driver/mysql"
 )
 
