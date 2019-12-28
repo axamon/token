@@ -37,7 +37,7 @@ func TestCheckLocalCredentials(t *testing.T) {
 			c: &token.Credentials{
 				User:     "pluto",
 				Hashpass: hashstring.Md5Sum("pippo")}},
-			want: false, wantErr: false},
+			want: false, wantErr: true},
 		{name: "third", args: args{ctx: context.TODO(),
 			c: &token.Credentials{
 				User:     "pippo",
@@ -51,7 +51,7 @@ func TestCheckLocalCredentials(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			time.Sleep(time.Millisecond)
+			time.Sleep(time.Millisecond) // modified after bloomfilter introduction.
 			got, err := token.CheckLocalCredentials(tt.args.ctx, tt.args.c)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CheckLocalCredentials() error = %v, wantErr %v", err, tt.wantErr)
