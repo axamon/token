@@ -34,7 +34,7 @@ func TestCheckCredentialsDBCtx(t *testing.T) {
 		{name: "Should go in error",
 			args:    args{ctx: context.TODO(), c: &token.Credentials{User: "pippo", Hashpass: "fsd"}},
 			want:    false,
-			wantErr: false},
+			wantErr: true},
 		{name: "Should timeout",
 			args:    args{ctx: ctxshort, c: &token.Credentials{User: "pippo", Hashpass: "fsd"}},
 			want:    false,
